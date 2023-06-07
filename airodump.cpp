@@ -64,12 +64,12 @@ void parse_dot11(const u_char* packet, int caplen){
     ieee80211_radiotap_header* radiotap = (ieee80211_radiotap_header*)packet; 
     BEACON_FRAME* beacon = (BEACON_FRAME*)(packet + radiotap->it_len); 
     Mac bssid = Mac(beacon->bssid);
+    if(beacon->frameControl[0]!=0x80) return; 
     if(mapp.count(bssid)>0){
         mapp[bssid].Beacons ++; 
     }
     //printf("beacon frame control : %x\n",beacon->frameControl[0]);
     else { 
-        if(beacon->frameControl[0]!=0x80) return; 
         int idx  = (radiotap->it_len) + sizeof(BEACON_FRAME) + FIXED_PARAMETERS;
         // cout << "beacon sibal   " << sizeof(BEACON_FRAME) << "    Fixed sibal     " << FIXED_PARAMETERS << "  it_len  " << radiotap->it_len << endl; 
         // u_char* management = (packet + radiotap->it_len + sizeof(beacon) + FIXED_PARAMETERS); 
